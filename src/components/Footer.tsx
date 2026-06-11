@@ -62,7 +62,7 @@ export default function Footer({ locale, dict }: FooterProps) {
                     <div className="lg:col-span-2">
                         <ScrollReveal blur={true}>
                             <Link href={`${prefix}`} className="flex items-center mb-5 group">
-                                <img src="/logo.png" alt="RankUp Logo" className="h-10 w-auto transition-all duration-500 group-hover:scale-[6.3]" style={{ filter: 'brightness(0) invert(1)', transform: 'scale(6)', transformOrigin: 'left center' }} />
+                                <img src="/logo.png" alt="RankUp Logo" className="h-10 sm:h-12 w-auto transition-all duration-300 group-hover:opacity-90" style={{ filter: 'brightness(0) invert(1)' }} />
                             </Link>
                         </ScrollReveal>
                         <ScrollReveal delay={0.1} blur={true}>

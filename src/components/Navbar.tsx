@@ -68,12 +68,10 @@ export default function Navbar({ locale, dict }: NavbarProps) {
                     <img
                         src="/logo.png"
                         alt="RankUp Logo"
+                        className="h-8 sm:h-9 md:h-10 w-auto transition-all duration-300"
                         style={{
-                            height: '36px',
-                            width: 'auto',
                             display: 'block',
                             filter: 'brightness(0) invert(1)',
-                            transform: 'none',
                             pointerEvents: 'none',
                             userSelect: 'none',
                         }}

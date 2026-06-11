@@ -62,14 +62,26 @@ export default function Navbar({ locale, dict }: NavbarProps) {
                 : 'bg-transparent'
                 }`}
         >
-            <nav aria-label="Navigation principale" className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-12 flex items-center justify-between h-[72px]">
-                {/* Logo */}
-                <Link href={`${prefix}`} className="flex items-center shrink-0 group">
-                    <img src="/logo.png" alt="RankUp Logo" className="h-10 w-auto transition-all duration-500 group-hover:scale-[6.3]" style={{ filter: 'brightness(0) invert(1)', transform: 'scale(6)', transformOrigin: 'left center' }} />
+            <nav aria-label="Navigation principale" className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex items-center justify-between h-[72px]">
+                {/* Logo — plain, no hover effect */}
+                <Link href={`${prefix}`} style={{ display: 'flex', alignItems: 'center', flexShrink: 0, textDecoration: 'none' }}>
+                    <img
+                        src="/logo.png"
+                        alt="RankUp Logo"
+                        style={{
+                            height: '36px',
+                            width: 'auto',
+                            display: 'block',
+                            filter: 'brightness(0) invert(1)',
+                            transform: 'none',
+                            pointerEvents: 'none',
+                            userSelect: 'none',
+                        }}
+                    />
                 </Link>
 
                 {/* Center nav - Desktop */}
-                <div className="hidden lg:flex items-center gap-1">
+                <div className="hidden lg:flex items-center gap-6">
                     {navLinks.map((link) =>
                         link.children ? (
                             <div
@@ -80,14 +92,14 @@ export default function Navbar({ locale, dict }: NavbarProps) {
                             >
                                 <Link
                                     href={link.href}
-                                    className={`px-4 py-2 text-[0.9rem] font-medium rounded-full transition-all duration-400 flex items-center gap-1.5 ${pathname.includes('/services')
+                                    className={`text-[0.9rem] font-medium transition-colors duration-300 flex items-center gap-1.5 ${pathname.includes('/services')
                                         ? 'text-white'
                                         : 'text-gray-400 hover:text-white'
                                         }`}
                                 >
                                     {link.label}
                                     <svg
-                                        className={`w-3.5 h-3.5 transition-transform duration-400 ${dropdownOpen ? 'rotate-180' : ''}`}
+                                        className={`w-3.5 h-3.5 transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
@@ -128,7 +140,7 @@ export default function Navbar({ locale, dict }: NavbarProps) {
                             <Link
                                 key={link.label}
                                 href={link.href}
-                                className={`px-4 py-2 text-[0.9rem] font-medium rounded-full transition-all duration-400 relative ${pathname === link.href
+                                className={`text-[0.9rem] font-medium transition-colors duration-300 relative ${pathname === link.href
                                     ? 'text-white'
                                     : 'text-gray-400 hover:text-white'
                                     }`}
@@ -137,7 +149,7 @@ export default function Navbar({ locale, dict }: NavbarProps) {
                                 {pathname === link.href && (
                                     <motion.div
                                         layoutId="nav-indicator"
-                                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-accent-purple"
+                                        className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full bg-accent-purple"
                                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                                     />
                                 )}
@@ -147,7 +159,7 @@ export default function Navbar({ locale, dict }: NavbarProps) {
                 </div>
 
                 {/* Right - Language Switcher + CTA */}
-                <div className="hidden lg:flex items-center gap-3">
+                <div className="hidden lg:flex items-center gap-4">
                     <LanguageSwitcher locale={locale} />
                     <Link href={`${prefix}/contact`} className="btn-primary text-sm !py-2.5 !px-5 money-hover-btn">
                         {dict.contactUs}
@@ -158,6 +170,7 @@ export default function Navbar({ locale, dict }: NavbarProps) {
                         </span>
                     </Link>
                 </div>
+
 
                 {/* Mobile toggle */}
                 <div className="lg:hidden flex items-center gap-2">

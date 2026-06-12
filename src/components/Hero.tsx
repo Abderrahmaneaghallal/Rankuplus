@@ -36,6 +36,7 @@ export default function Hero({
     };
     const sectionRef = useRef<HTMLElement>(null);
     const [mounted, setMounted] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const prefersReducedMotion = useReducedMotion();
 
     // Mouse parallax for decorative elements
@@ -54,6 +55,8 @@ export default function Hero({
 
     useEffect(() => {
         setMounted(true);
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
         if (prefersReducedMotion) return;
         const isTouchDevice = window.matchMedia('(hover: none)').matches;
         if (isTouchDevice) return;
@@ -70,10 +73,11 @@ export default function Hero({
         offset: ['start start', 'end start'],
     });
 
-    const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
-    const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '15%']);
-    const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-    const decorScale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+    // On mobile, use static values to avoid continuous scroll repaints
+    const bgY = useTransform(scrollYProgress, [0, 1], isMobile ? ['0%', '0%'] : ['0%', '30%']);
+    const contentY = useTransform(scrollYProgress, [0, 1], isMobile ? ['0%', '0%'] : ['0%', '15%']);
+    const contentOpacity = useTransform(scrollYProgress, [0, 0.5], isMobile ? [1, 1] : [1, 0]);
+    const decorScale = useTransform(scrollYProgress, [0, 1], [1, isMobile ? 1 : 1.2]);
 
     const containerVariants = {
         hidden: {},
@@ -108,8 +112,8 @@ export default function Hero({
             {/* Background with parallax */}
             <motion.div style={{ y: bgY }} className="absolute inset-0 bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950" />
 
-            {/* Mouse-reactive geometric circles — only after mount to avoid hydration mismatch */}
-            {mounted && (
+            {/* Mouse-reactive geometric circles — only after mount, only on desktop */}
+            {mounted && !isMobile && (
                 <>
                     <motion.div style={{ scale: decorScale }} className="absolute inset-0 overflow-hidden pointer-events-none">
                         <motion.div style={{ x: circleX1, y: circleY1 }}>

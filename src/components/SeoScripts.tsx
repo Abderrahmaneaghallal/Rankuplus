@@ -24,10 +24,14 @@ export default function SeoScripts() {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        fetch('/api/seo-settings')
-            .then(r => r.json())
-            .then(d => { setSettings(d); setLoaded(true); })
-            .catch(() => setLoaded(true));
+        // Delay SEO settings fetch by 2s — avoids competing with LCP render
+        const timer = setTimeout(() => {
+            fetch('/api/seo-settings')
+                .then(r => r.json())
+                .then(d => { setSettings(d); setLoaded(true); })
+                .catch(() => setLoaded(true));
+        }, 2000);
+        return () => clearTimeout(timer);
     }, []);
 
     if (!loaded) return null;
@@ -123,7 +127,7 @@ export default function SeoScripts() {
             {tt && (
                 <Script
                     id="tiktok-pixel"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
                     dangerouslySetInnerHTML={{
                         __html: `!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=i;ttq._t=ttq._t||{};ttq._t[e]=+new Date;ttq._o=ttq._o||{};ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript";o.async=!0;o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};ttq.load('${tt}');ttq.page()}(window,document,'ttq');`,
                     }}
@@ -136,7 +140,7 @@ export default function SeoScripts() {
             {hj && (
                 <Script
                     id="hotjar"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
                     dangerouslySetInnerHTML={{
                         __html: `(function(h,o,t,j,a,r){h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};h._hjSettings={hjid:${hj},hjsv:6};a=o.getElementsByTagName('head')[0];r=o.createElement('script');r.async=1;r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;a.appendChild(r);})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`,
                     }}
@@ -149,7 +153,7 @@ export default function SeoScripts() {
             {clarity && (
                 <Script
                     id="clarity"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
                     dangerouslySetInnerHTML={{
                         __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${clarity}");`,
                     }}

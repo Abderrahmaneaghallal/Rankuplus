@@ -108,7 +108,11 @@ export default function ScrollReveal({
             initial={initialState}
             animate={isInView ? animateState : {}}
             transition={transition}
-            style={perspective ? { perspective: 1200, transformStyle: 'preserve-3d' as const } : { willChange: 'transform, opacity' }}
+            style={
+                perspective
+                    ? { perspective: 1200, transformStyle: 'preserve-3d' as const }
+                    : { willChange: isInView ? 'auto' : 'transform, opacity' }
+            }
             className={className}
         >
             {children}
@@ -148,7 +152,7 @@ const ParallaxScrollReveal = forwardRef<HTMLDivElement, {
             style={{
                 y: parallaxY,
                 ...(perspective ? { perspective: 1200, transformStyle: 'preserve-3d' as const } : {}),
-                willChange: 'transform, opacity',
+                willChange: isInView ? 'transform' : 'transform, opacity',
             }}
             className={className}
         >

@@ -442,6 +442,9 @@ p {
 
 .section-padding {
   padding: 5rem 1.5rem;
+  /* Browser skips rendering off-screen sections — big LCP/FID win */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 800px;
 }
 
 @media (min-width: 768px) {
@@ -1277,16 +1280,17 @@ section span[class*='rounded-full'][class*='border']:hover {
   background: transparent;
 }
 
-/* GPU acceleration for all 3D floating shapes */
-.wireframe-cube,
-.wireframe-cube div {
-  will-change: transform;
-  contain: layout style;
+/* GPU acceleration for 3D shapes — only when animations are allowed */
+@media (prefers-reduced-motion: no-preference) {
+  .wireframe-cube,
+  .wireframe-cube div {
+    will-change: transform;
+    contain: layout style;
+  }
 }
 
 /* Utility class for GPU-accelerated elements */
 .gpu-accelerated {
-  will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
 }
@@ -1325,21 +1329,30 @@ a, button {
     will-change: auto;
   }
 
-  /* Reduce blob complexity on mobile */
+  /* Stop all blob animations entirely on mobile — single biggest CPU saving */
   .blob {
-    filter: blur(60px);
-    animation-duration: 30s;
+    animation: none !important;
+    filter: blur(50px);
+    will-change: auto;
+  }
+
+  /* Stop shimmer + badge + divider animations on mobile */
+  .shimmer-text,
+  .hero-badge::before,
+  .section-divider::after,
+  .hero-circle-pulse,
+  .hero-circle-pulse-alt,
+  .money-hover-btn::after {
+    animation: none !important;
   }
 
   /* Prevent glass card scale on mobile (avoids layout shift) */
   .glass-card:hover {
     transform: none;
   }
-
   .interactive-card:hover {
     transform: none;
   }
-
   .stat-card:hover {
     transform: none;
   }
@@ -1347,6 +1360,8 @@ a, button {
   /* Faster section padding on mobile */
   .section-padding {
     padding: 4rem 1rem;
+    /* Reset intrinsic size to auto on mobile */
+    contain-intrinsic-size: 0 500px;
   }
 
   /* Ensure text doesn't overflow on small screens */
@@ -1355,9 +1370,10 @@ a, button {
     word-break: break-word;
   }
 
-  /* Stop marquee animation on mobile — too CPU intensive */
+  /* Stop marquee animations on mobile — too CPU intensive */
   .client-logos-track,
-  .client-logos-track-reverse {
+  .client-logos-track-reverse,
+  .trust-marquee-track {
     animation: none !important;
     will-change: auto;
   }
@@ -1372,6 +1388,18 @@ a, button {
     padding-top: 4rem;
     padding-bottom: 4rem;
   }
+
+  /* Disable grid-pattern on mobile — mask-image is expensive */
+  .grid-pattern {
+    display: none;
+  }
+
+  /* Reduce backdrop-filter cost on mobile */
+  .glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(10, 15, 30, 0.85);
+  }
 }
 
 /* ═══ CLIENT LOGOS MARQUEE ═══ */
@@ -1385,7 +1413,7 @@ a, button {
   align-items: center;
   width: max-content;
   animation: client-logos-scroll 40s linear infinite;
-  will-change: transform;
+  /* will-change only during active animation — set via JS or hover state */
 }
 
 .client-logos-track-reverse {
@@ -1393,7 +1421,6 @@ a, button {
   align-items: center;
   width: max-content;
   animation: client-logos-scroll-reverse 45s linear infinite;
-  will-change: transform;
 }
 
 .client-logos-marquee:hover .client-logos-track,

@@ -64,7 +64,13 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${outfit.variable} ${notoSansArabic.variable}`}>
       <head>
+        {/* DNS prefetch for analytics CDNs */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://analytics.tiktok.com" />
+        <link rel="dns-prefetch" href="https://static.hotjar.com" />
+        {/* Preconnect for Google Fonts static assets */}
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <SeoVerificationTags />
       </head>
       <body className="antialiased">

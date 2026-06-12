@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import ScrollReveal from './ScrollReveal';
 import Tilt3D from './Tilt3D';
+import Script from 'next/script';
 
 const reviews = [
     {
@@ -19,6 +21,7 @@ const reviews = [
         bg: 'from-blue-500/10 to-blue-600/5',
         borderColor: 'border-blue-500/20',
         link: '#',
+        hasBadge: false,
     },
     {
         name: 'Provenexpert',
@@ -34,6 +37,7 @@ const reviews = [
         bg: 'from-amber-500/10 to-amber-600/5',
         borderColor: 'border-amber-500/20',
         link: '#',
+        hasBadge: false,
     },
     {
         name: 'Clutch',
@@ -50,6 +54,7 @@ const reviews = [
         bg: 'from-red-500/10 to-red-600/5',
         borderColor: 'border-red-500/20',
         link: '#',
+        hasBadge: false,
     },
     {
         name: 'Sortlist',
@@ -65,6 +70,7 @@ const reviews = [
         bg: 'from-gray-500/10 to-gray-600/5',
         borderColor: 'border-gray-500/20',
         link: '#',
+        hasBadge: true,
     },
 ];
 
@@ -86,35 +92,126 @@ function StarRating({ count, filled }: { count: number; filled: number }) {
 }
 
 export default function ReviewBadges() {
+    const [sortlistOpen, setSortlistOpen] = useState(false);
+    const [badgeLoaded, setBadgeLoaded] = useState(false);
+
+    const openSortlist = () => {
+        setSortlistOpen(true);
+        // Re-trigger badge render after modal opens
+        if (!badgeLoaded) setBadgeLoaded(true);
+    };
+
     return (
-        <div className="mt-12">
-            <ScrollReveal blur={true} direction="up">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
-                    {reviews.map((review, i) => (
-                        <ScrollReveal key={review.name} delay={i * 0.1} blur={true} scale={true}>
-                            <Tilt3D intensity={10} glare={true} scale={1.05}>
-                                <a
-                                    href={review.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`glass-card p-5 lg:p-6 flex flex-col items-center text-center gap-3 group border ${review.borderColor} hover:border-accent-purple/30 transition-all duration-500`}
-                                >
-                                    <div style={{ transform: 'translateZ(20px)' }}>
-                                        {review.icon}
-                                    </div>
-                                    <div style={{ transform: 'translateZ(10px)' }}>
-                                        <div className="text-white font-heading font-semibold text-sm mb-1">{review.name}</div>
-                                        <div className="flex items-center justify-center gap-2 mb-1">
-                                            <span className="text-white font-bold text-lg">{review.rating}</span>
-                                        </div>
-                                        <StarRating count={review.stars} filled={Math.round(review.rating)} />
-                                    </div>
-                                </a>
-                            </Tilt3D>
-                        </ScrollReveal>
-                    ))}
-                </div>
-            </ScrollReveal>
-        </div>
+        <>
+            <div className="mt-12">
+                <ScrollReveal blur={true} direction="up">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+                        {reviews.map((review, i) => (
+                            <ScrollReveal key={review.name} delay={i * 0.1} blur={true} scale={true}>
+                                <Tilt3D intensity={10} glare={true} scale={1.05}>
+                                    {review.hasBadge ? (
+                                        // Sortlist — opens modal on click
+                                        <button
+                                            type="button"
+                                            onClick={openSortlist}
+                                            className={`w-full glass-card p-5 lg:p-6 flex flex-col items-center text-center gap-3 group border ${review.borderColor} hover:border-accent-purple/30 transition-all duration-500 cursor-pointer`}
+                                        >
+                                            <div style={{ transform: 'translateZ(20px)' }}>
+                                                {review.icon}
+                                            </div>
+                                            <div style={{ transform: 'translateZ(10px)' }}>
+                                                <div className="text-white font-heading font-semibold text-sm mb-1">{review.name}</div>
+                                                <div className="flex items-center justify-center gap-2 mb-1">
+                                                    <span className="text-white font-bold text-lg">{review.rating}</span>
+                                                </div>
+                                                <StarRating count={review.stars} filled={Math.round(review.rating)} />
+                                            </div>
+                                        </button>
+                                    ) : (
+                                        // Other platforms — regular link
+                                        <a
+                                            href={review.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`glass-card p-5 lg:p-6 flex flex-col items-center text-center gap-3 group border ${review.borderColor} hover:border-accent-purple/30 transition-all duration-500`}
+                                        >
+                                            <div style={{ transform: 'translateZ(20px)' }}>
+                                                {review.icon}
+                                            </div>
+                                            <div style={{ transform: 'translateZ(10px)' }}>
+                                                <div className="text-white font-heading font-semibold text-sm mb-1">{review.name}</div>
+                                                <div className="flex items-center justify-center gap-2 mb-1">
+                                                    <span className="text-white font-bold text-lg">{review.rating}</span>
+                                                </div>
+                                                <StarRating count={review.stars} filled={Math.round(review.rating)} />
+                                            </div>
+                                        </a>
+                                    )}
+                                </Tilt3D>
+                            </ScrollReveal>
+                        ))}
+                    </div>
+                </ScrollReveal>
+            </div>
+
+            {/* ── Sortlist Badge Modal ──────────────────────────────── */}
+            {sortlistOpen && (
+                <>
+                    {/* Backdrop */}
+                    <div
+                        className="fixed inset-0 z-[9998] bg-black/70 backdrop-blur-sm"
+                        onClick={() => setSortlistOpen(false)}
+                        aria-hidden="true"
+                    />
+
+                    {/* Modal */}
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Sortlist Badge"
+                        className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                    >
+                        <div
+                            className="relative rounded-2xl border border-white/10 bg-[#0d1530] shadow-2xl p-8 flex flex-col items-center gap-6 min-w-[260px]"
+                            style={{ boxShadow: '0 0 60px rgba(139,92,246,0.2)' }}
+                        >
+                            {/* Close button */}
+                            <button
+                                onClick={() => setSortlistOpen(false)}
+                                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+                                aria-label="Close"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+
+                            <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold">Certifié par</p>
+
+                            {/* Sortlist official badge widget */}
+                            <div className="sortlist-badge" />
+
+                            {/* Fallback / Load the Sortlist badge script */}
+                            {badgeLoaded && (
+                                <Script
+                                    id="sortlist-badge-script"
+                                    src="https://www.sortlist.com/fr/api/badge-embed?agencySlug=agence-marketing-maroc&agencyUuid=7714f29c-c532-4814-afe8-7f717274deaa&color=primary&hue=500&type=trusted-partner&country=MA&locale=en"
+                                    strategy="lazyOnload"
+                                />
+                            )}
+
+                            <a
+                                href="https://www.sortlist.com/agency/agence-marketing-maroc"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-accent-purple hover:text-accent-cyan transition-colors underline underline-offset-2"
+                            >
+                                Voir notre profil Sortlist →
+                            </a>
+                        </div>
+                    </div>
+                </>
+            )}
+        </>
     );
 }

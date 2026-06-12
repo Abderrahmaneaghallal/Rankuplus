@@ -52,6 +52,7 @@ export default function BlogPage() {
     useEffect(() => {
         setLoading(true);
         const params = new URLSearchParams();
+        params.set('limit', '12');
         if (search) params.set('search', search);
         if (activeCategory) params.set('category', activeCategory);
         fetch(`/api/blog?${params}`)

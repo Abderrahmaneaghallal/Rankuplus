@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && npx prisma db push --accept-data-loss && next build && node -e \"const fs=require('fs');fs.cpSync('.next/static','.next/standalone/.next/static',{recursive:true});fs.cpSync('public','.next/standalone/public',{recursive:true});\"",
+    "build": "node -e \"process.env.DATABASE_URL=process.env.DATABASE_URL||'mysql://localhost'; require('child_process').execSync('npx prisma generate', {stdio: 'inherit'})\" && next build && node -e \"const fs=require('fs');fs.cpSync('.next/static','.next/standalone/.next/static',{recursive:true});fs.cpSync('public','.next/standalone/public',{recursive:true});\"",
     "start": "node server.js",
     "lint": "eslint",
     "postinstall": "prisma generate",

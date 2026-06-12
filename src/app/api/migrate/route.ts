@@ -6,7 +6,7 @@ import path from 'path';
 
 export const runtime = 'nodejs';
 
-const DB_URL = 'mysql://u483533463_rankupwebsite:Rankup.2026@127.0.0.1:3306/u483533463_rankupwebsite';
+const DB_URL = 'mysql://u536454498_new_rankup:New_rankup%402026@127.0.0.1:3306/u536454498_new_rankup';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);

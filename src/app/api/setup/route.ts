@@ -17,9 +17,10 @@ export async function GET(request: Request) {
     // Try to find the actual working password by testing each one
     const toTry = [
         currentDbUrl, // whatever is currently set
+        'mysql://u536454498_new_rankup:New_rankup%402026@127.0.0.1:3306/u536454498_new_rankup',
+        'mysql://u536454498_new_rankup:New_rankup%402026@localhost:3306/u536454498_new_rankup',
         'mysql://u483533463_rankupwebsite:Rankup.2026@localhost:3306/u483533463_rankupwebsite',
         'mysql://u483533463_rankupwebsite:Rankup.2026@127.0.0.1:3306/u483533463_rankupwebsite',
-        'mysql://u483533463_rankupwebsite:RankUp2026!@localhost:3306/u483533463_rankupwebsite',
     ];
 
     let workingUrl: string | null = null;

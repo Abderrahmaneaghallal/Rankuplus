@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     if (!workingUrl) {
         // Read server.js to diagnose
         let serverJsSnippet = 'not found';
-        for (const p of [path.join(process.cwd(), 'server.js'), path.join(process.cwd(), '..', 'server.js')]) {
+        for (const p of [path.join(/* turbopackIgnore: true */ process.cwd(), 'server.js'), path.join(/* turbopackIgnore: true */ process.cwd(), '..', 'server.js')]) {
             try { serverJsSnippet = fs.readFileSync(p, 'utf8').slice(0, 200); break; } catch { /**/ }
         }
         return NextResponse.json({
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
     // Working URL found — push schema to DB, then create admin user
     let schemaPushResult = 'not attempted';
     try {
-        const cwd = process.cwd(); // /home/.../nodejs
+        const cwd = /* turbopackIgnore: true */ process.cwd(); // /home/.../nodejs
         const prismaBin = path.join(cwd, 'node_modules', '.bin', 'prisma');
         const prismaSchema = path.join(cwd, 'prisma', 'schema.prisma');
         const env = { ...process.env, DATABASE_URL: workingUrl };

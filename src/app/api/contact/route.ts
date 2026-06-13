@@ -56,10 +56,16 @@ async function sendContactEmail(data: {
         const transporter = nodemailer.default.createTransport({
             host: smtpHost,
             port: smtpPort,
-            secure: true,
+            secure: smtpPort === 465,
             auth: { user: smtpUser, pass: smtpPass },
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
+            connectionTimeout: 15000,
+            greetingTimeout: 15000,
+            // Hostinger shared hosting uses internal mail server certs that
+            // don't always pass Node.js strict TLS verification — disable it
+            // (same fix used in the working Confortloc PHP implementation)
+            tls: {
+                rejectUnauthorized: false,
+            },
         });
 
         await transporter.sendMail({
@@ -150,8 +156,10 @@ export async function POST(req: NextRequest) {
         });
 
         // 2. Send email notification (non-critical — failure won't affect user)
-        sendContactEmail({ name, email, phone, service, message });
-        // Note: intentionally NOT awaited so slow SMTP doesn't delay the response
+        // Awaited so errors appear in server logs for debugging
+        await sendContactEmail({ name, email, phone, service, message }).catch(e =>
+            console.error('[contact] Email notification failed:', e)
+        );
 
         return NextResponse.json({ success: true });
     } catch (err) {

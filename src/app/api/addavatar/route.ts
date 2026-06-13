@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 export const runtime = 'nodejs';
 
-const DB_URL = 'mysql://u483533463_rankupwebsite:Rankup.2026@127.0.0.1:3306/u483533463_rankupwebsite';
+const DB_URL = process.env.DATABASE_URL || '';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);

@@ -40,7 +40,7 @@ async function sendContactEmail(data: {
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
     const smtpTo   = process.env.SMTP_TO;
-    const smtpHost = process.env.SMTP_HOST || 'smtp.hostinger.com';
+    const smtpHost = process.env.SMTP_HOST || 'mail.hostinger.com';
     const smtpPort = Number(process.env.SMTP_PORT) || 465;
 
     // Skip email silently if credentials are not configured
